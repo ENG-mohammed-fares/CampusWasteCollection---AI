@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            prefWidth="1280" prefHeight="800"
+            stylesheets="@../css/dashboard.css">
+
+    <left>
+        <VBox prefWidth="235" spacing="30" styleClass="sidebar">
+            <padding>
+                <Insets top="30" right="20" bottom="25" left="20"/>
+            </padding>
+
+            <VBox spacing="4">
+                <Label text="CAMPUS" styleClass="brand-title"/>
+                <Label text="WASTE AI" styleClass="brand-subtitle"/>
+            </VBox>
+
+            <VBox spacing="12">
+                <Label text="WORKSPACE" styleClass="section-caption"/>
+                <Label text="Overview" styleClass="nav-active"/>
+                <Label text="Bin Monitoring" styleClass="nav-item"/>
+                <Label text="AI Predictions" styleClass="nav-item"/>
+                <Label text="Collection Routes" styleClass="nav-item"/>
+                <Label text="Reports" styleClass="nav-item"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox spacing="5">
+                <Label text="CAMPUS COLLECTION" styleClass="footer-title"/>
+                <Label text="AI-powered waste management"
+                       styleClass="footer-note"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="24" styleClass="content">
+            <padding>
+                <Insets top="32" right="32" bottom="30" left="32"/>
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <VBox spacing="5">
+                    <Label text="Dashboard" styleClass="page-title"/>
+                    <Label text="Monitor and optimize campus waste collection."
+                           styleClass="page-subtitle"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label text="SYSTEM STATUS" styleClass="status-caption"/>
+                <Label text="READY" styleClass="status-pill"/>
+            </HBox>
+
+            <HBox spacing="16">
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="TOTAL BINS" styleClass="stat-label"/>
+                    <Label text="10" styleClass="stat-value"/>
+                    <Label text="Registered campus bins" styleClass="stat-note"/>
+                </VBox>
+
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="NEED PICKUP" styleClass="stat-label"/>
+                    <Label text="--" styleClass="stat-value"/>
+                    <Label text="Awaiting AI predictions" styleClass="stat-note"/>
+                </VBox>
+
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="ACTIVE ROUTES" styleClass="stat-label"/>
+                    <Label text="--" styleClass="stat-value"/>
+                    <Label text="Not optimized yet" styleClass="stat-note"/>
+                </VBox>
+
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="TOTAL DISTANCE" styleClass="stat-label"/>
+                    <Label text="--" styleClass="stat-value"/>
+                    <Label text="Awaiting route calculation" styleClass="stat-note"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="18" VBox.vgrow="ALWAYS">
+
+                <VBox styleClass="panel" spacing="18"
+                      HBox.hgrow="ALWAYS">
+                    <Label text="Collection Overview"
+                           styleClass="panel-title"/>
+
+                    <Separator/>
+
+                    <VBox alignment="CENTER" spacing="12"
+                          VBox.vgrow="ALWAYS">
+                        <Label text="No dataset loaded"
+                               styleClass="empty-title"/>
+                        <Label text="Bin readings and collection activity will be displayed here after connecting the dataset."
+                               wrapText="true"
+                               styleClass="empty-description"/>
+                    </VBox>
+                </VBox>
+
+                <VBox styleClass="panel" prefWidth="300" spacing="16">
+                    <Label text="AI ENGINE" styleClass="panel-title"/>
+                    <Separator/>
+
+                    <Label text="01  PERCEPTRON"
+                           styleClass="algorithm-title"/>
+                    <Label text="Predicting which bins require collection."
+                           wrapText="true"
+                           styleClass="algorithm-description"/>
+
+                    <Label text="NOT TRAINED" styleClass="pending-tag"/>
+
+                    <Separator/>
+
+                    <Label text="02  SIMULATED ANNEALING"
+                           styleClass="algorithm-title"/>
+                    <Label text="Finding an efficient collection route."
+                           wrapText="true"
+                           styleClass="algorithm-description"/>
+
+                    <Label text="NOT STARTED" styleClass="pending-tag"/>
+                </VBox>
+
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
