@@ -25,7 +25,7 @@
     -fx-font-weight: bold;
 }
 
-.nav-item, .nav-active {
+.nav-item, .nav-active, .nav-item-disabled {
     -fx-padding: 12px;
     -fx-background-radius: 8px;
     -fx-font-size: 13px;
@@ -41,6 +41,10 @@
     -fx-font-weight: bold;
 }
 
+.nav-item-disabled {
+    -fx-text-fill: #65758C;
+}
+
 .footer-title {
     -fx-text-fill: #DCE5F0;
     -fx-font-size: 11px;
@@ -52,12 +56,12 @@
     -fx-font-size: 10px;
 }
 
-.content {
+.content, .tab-content {
     -fx-background-color: #F3F6FA;
 }
 
 .page-title {
-    -fx-font-size: 28px;
+    -fx-font-size: 25px;
     -fx-font-weight: bold;
     -fx-text-fill: #17283E;
 }
@@ -73,12 +77,59 @@
 }
 
 .status-pill {
-    -fx-background-color: #DDF5E9;
-    -fx-text-fill: #21845C;
+    -fx-background-color: #F8EED7;
+    -fx-text-fill: #946B1F;
     -fx-padding: 7px 12px;
     -fx-background-radius: 20px;
     -fx-font-size: 10px;
     -fx-font-weight: bold;
+}
+
+.status-pill-ready {
+    -fx-background-color: #DDF2EA;
+    -fx-text-fill: #186B54;
+}
+
+.main-tabs {
+    -fx-background-color: transparent;
+}
+
+.main-tabs > .tab-header-area > .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.main-tabs > .tab-header-area .tab {
+    -fx-background-color: #E8EDF3;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 8px 18px;
+}
+
+.main-tabs > .tab-header-area .tab:selected {
+    -fx-background-color: white;
+}
+
+.main-tabs > .tab-header-area .tab .tab-label {
+    -fx-text-fill: #53657A;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.main-tabs > .tab-content-area {
+    -fx-background-color: transparent;
+}
+
+.content-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-padding: 0;
+}
+
+.content-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.tab-content {
+    -fx-padding: 4px 4px 18px 4px;
 }
 
 .stat-card, .panel {
@@ -89,7 +140,7 @@
 }
 
 .stat-card {
-    -fx-padding: 19px;
+    -fx-padding: 17px;
 }
 
 .stat-label {
@@ -99,7 +150,7 @@
 }
 
 .stat-value {
-    -fx-font-size: 29px;
+    -fx-font-size: 27px;
     -fx-text-fill: #17283E;
     -fx-font-weight: bold;
 }
@@ -110,7 +161,7 @@
 }
 
 .panel {
-    -fx-padding: 22px;
+    -fx-padding: 20px;
 }
 
 .panel-title {
@@ -125,7 +176,7 @@
     -fx-font-weight: bold;
 }
 
-.empty-description, .algorithm-description {
+.empty-description, .algorithm-description, .section-description {
     -fx-font-size: 11px;
     -fx-text-fill: #8996A7;
 }
@@ -143,4 +194,102 @@
     -fx-background-radius: 5px;
     -fx-font-size: 9px;
     -fx-font-weight: bold;
+}
+
+.pending-tag-ready {
+    -fx-background-color: #DDF2EA;
+    -fx-text-fill: #186B54;
+}
+
+.field-caption, .metric-caption {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #68798D;
+}
+
+.file-name {
+    -fx-font-size: 11px;
+    -fx-text-fill: #243B56;
+}
+
+.field-note {
+    -fx-font-size: 10px;
+    -fx-text-fill: #8996A7;
+}
+
+.primary-button {
+    -fx-background-color: #1F8B70;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 18px;
+    -fx-background-radius: 7px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #18775F;
+}
+
+.primary-button:disabled {
+    -fx-opacity: 0.55;
+}
+
+.secondary-button {
+    -fx-background-color: #EAF0F5;
+    -fx-text-fill: #263D56;
+    -fx-font-weight: bold;
+    -fx-padding: 9px 12px;
+    -fx-background-radius: 7px;
+}
+
+.metric-card {
+    -fx-background-color: #F6F8FB;
+    -fx-background-radius: 8px;
+    -fx-padding: 13px;
+    -fx-min-width: 110px;
+}
+
+.metric-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #17283E;
+}
+
+.result-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #64758A;
+}
+
+.result-value {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #243B56;
+}
+
+.status-message {
+    -fx-font-size: 11px;
+    -fx-text-fill: #718197;
+}
+
+.prediction-result {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #243B56;
+}
+
+.disclaimer {
+    -fx-font-size: 10px;
+    -fx-text-fill: #8996A7;
+}
+
+.error-message {
+    -fx-font-size: 11px;
+    -fx-text-fill: #B44C4C;
+}
+
+.warning-message {
+    -fx-font-size: 11px;
+    -fx-text-fill: #946B1F;
+    -fx-background-color: #F8EED7;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 10px;
 }
