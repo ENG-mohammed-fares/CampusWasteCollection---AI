@@ -75,7 +75,10 @@ public class PerceptronCli {
         System.out.println("TEST_SAMPLES=" + testing.samples().size());
         System.out.println("FEATURES=" + training.featureColumns());
 
-        PerceptronTrainingResult trained = new PerceptronTrainer().train(training);
+        PerceptronTrainingResult trained = new PerceptronTrainer(
+                PerceptronTrainer.DEFAULT_LEARNING_RATE,
+                PerceptronTrainer.DEFAULT_MAX_EPOCHS,
+                PerceptronTrainer.PRODUCTION_POSITIVE_CLASS_WEIGHT).train(training);
         System.out.println("MODEL_STATUS=TRAINED");
         System.out.println("CONVERGED=" + trained.converged());
         System.out.println("EPOCHS=" + trained.epochsCompleted());

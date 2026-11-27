@@ -455,7 +455,12 @@
                                         <VBox styleClass="panel" spacing="12">
                                             <Label text="Best route" styleClass="panel-title"/>
                                             <Label text="The route starts and ends at DEPOT and includes pickup bins only." styleClass="section-description" wrapText="true"/>
-                                            <Pane fx:id="routeMapPane" prefHeight="320" styleClass="route-map"/>
+                                            <Pane fx:id="routeMapPane" prefWidth="640" prefHeight="320" styleClass="route-map"/>
+                                            <HBox spacing="16" alignment="CENTER_LEFT">
+                                                <Label text="● Pickup bin" styleClass="pickup-legend"/>
+                                                <Label text="○ Other bin" styleClass="other-legend"/>
+                                                <Label text="■ Depot" styleClass="depot-legend"/>
+                                            </HBox>
                                             <LineChart fx:id="distanceChart" animated="false" createSymbols="false" legendVisible="true" prefHeight="320">
                                                 <xAxis><NumberAxis label="Iteration"/></xAxis>
                                                 <yAxis><NumberAxis label="Distance (m)"/></yAxis>

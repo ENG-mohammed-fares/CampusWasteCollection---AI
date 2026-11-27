@@ -316,8 +316,12 @@ public class PerceptronController {
     private void drawRouteMap(RoutePlanningResult result) {
         routeMapPane.getChildren().clear();
         java.util.Map<String, RouteLocation> locations = new java.util.HashMap<>();
+        java.util.Set<String> pickupIds = new java.util.HashSet<>();
         for (BinPrediction prediction : result.predictions()) {
             locations.put(prediction.bin().id(), prediction.location());
+            if (prediction.needsPickup()) {
+                pickupIds.add(prediction.bin().id());
+            }
         }
         RouteLocation depot = new RouteLocation("DEPOT", 0.0, 0.0);
         List<RouteLocation> route = new java.util.ArrayList<>();
@@ -340,6 +344,17 @@ public class PerceptronController {
                     offsetX + to.xMeters() * scale, offsetY - to.yMeters() * scale);
             line.getStyleClass().add("route-line");
             routeMapPane.getChildren().add(line);
+        }
+        for (BinPrediction prediction : result.predictions()) {
+            if (pickupIds.contains(prediction.bin().id())) {
+                continue;
+            }
+            RouteLocation location = prediction.location();
+            double x = offsetX + location.xMeters() * scale;
+            double y = offsetY - location.yMeters() * scale;
+            Circle marker = new Circle(x, y, 4.0);
+            marker.getStyleClass().add("other-marker");
+            routeMapPane.getChildren().add(marker);
         }
         for (RouteLocation location : route.subList(0, Math.max(1, route.size() - 1))) {
             double x = offsetX + location.xMeters() * scale;
