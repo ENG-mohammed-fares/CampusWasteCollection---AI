@@ -293,3 +293,26 @@
     -fx-background-radius: 6px;
     -fx-padding: 8px 10px;
 }
+.route-map {
+    -fx-background-color: #f7fafc;
+    -fx-border-color: #d9e2ec;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.route-line {
+    -fx-stroke: #277da1;
+    -fx-stroke-width: 2;
+}
+
+.pickup-marker {
+    -fx-fill: #277da1;
+    -fx-stroke: white;
+    -fx-stroke-width: 1;
+}
+
+.depot-marker {
+    -fx-fill: #d1495b;
+    -fx-stroke: white;
+    -fx-stroke-width: 1;
+}

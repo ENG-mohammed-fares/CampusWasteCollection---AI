@@ -11,6 +11,7 @@ JavaFX application for the Campus Waste Collection assignment. It trains a three
 - Separate training and test CSV selection.
 - `Train and Test` workflow.
 - Test accuracy, missed pickups, false pickup alerts, confusion-matrix counts, epochs, and convergence status.
+- Production training uses a positive-class update weight of `110.0` to prioritize detecting pickup cases; the value is defined as `PerceptronTrainer.PRODUCTION_POSITIVE_CLASS_WEIGHT`.
 - Manual entry of the three readings for one bin.
 - `Pickup` / `No pickup` prediction.
 - Current fill value shown from the first reading. The assignment does not define categorical fill thresholds, so the UI displays the supplied dataset value rather than inventing thresholds.
@@ -24,6 +25,7 @@ JavaFX application for the Campus Waste Collection assignment. It trains a three
 - Initial temperature field, default `60`.
 - Cooling rate field, default `0.997`.
 - Best route, route distance, and each bin prediction are displayed.
+- A visual route map connects the depot and pickup containers.
 - Line chart showing current distance and best distance against iteration number.
 
 ## Data files

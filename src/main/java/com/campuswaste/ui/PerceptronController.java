@@ -18,6 +18,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.stage.FileChooser;
@@ -76,6 +79,7 @@ public class PerceptronController {
     @FXML private VBox routePredictionsBox;
     @FXML private Label routeSummaryLabel;
     @FXML private LineChart<Number, Number> distanceChart;
+    @FXML private Pane routeMapPane;
 
     private final PerceptronCsvLoader csvLoader = new PerceptronCsvLoader();
 
@@ -164,7 +168,10 @@ public class PerceptronController {
 
         PerceptronTrainingResult result;
         try {
-            result = new PerceptronTrainer().train(trainingDataset);
+            result = new PerceptronTrainer(
+                    PerceptronTrainer.DEFAULT_LEARNING_RATE,
+                    PerceptronTrainer.DEFAULT_MAX_EPOCHS,
+                    PerceptronTrainer.PRODUCTION_POSITIVE_CLASS_WEIGHT).train(trainingDataset);
         } catch (IllegalArgumentException exception) {
             showError("Training failed: " + describe(exception));
             workflowStatusLabel.setText("Training failed. Check the training dataset.");
@@ -303,6 +310,47 @@ public class PerceptronController {
             best.getData().add(new XYChart.Data<>(index, bestHistory.get(index)));
         }
         distanceChart.getData().setAll(current, best);
+        drawRouteMap(result);
+    }
+
+    private void drawRouteMap(RoutePlanningResult result) {
+        routeMapPane.getChildren().clear();
+        java.util.Map<String, RouteLocation> locations = new java.util.HashMap<>();
+        for (BinPrediction prediction : result.predictions()) {
+            locations.put(prediction.bin().id(), prediction.location());
+        }
+        RouteLocation depot = new RouteLocation("DEPOT", 0.0, 0.0);
+        List<RouteLocation> route = new java.util.ArrayList<>();
+        route.add(depot);
+        route.addAll(result.optimizationResult().bestRoute());
+        route.add(depot);
+        double minX = route.stream().mapToDouble(RouteLocation::xMeters).min().orElse(0.0);
+        double maxX = route.stream().mapToDouble(RouteLocation::xMeters).max().orElse(1.0);
+        double minY = route.stream().mapToDouble(RouteLocation::yMeters).min().orElse(0.0);
+        double maxY = route.stream().mapToDouble(RouteLocation::yMeters).max().orElse(1.0);
+        double width = Math.max(1.0, maxX - minX);
+        double height = Math.max(1.0, maxY - minY);
+        double scale = Math.min(560.0 / width, 260.0 / height);
+        double offsetX = 40.0 - minX * scale;
+        double offsetY = 30.0 + maxY * scale;
+        for (int index = 0; index < route.size() - 1; index++) {
+            RouteLocation from = route.get(index);
+            RouteLocation to = route.get(index + 1);
+            Line line = new Line(offsetX + from.xMeters() * scale, offsetY - from.yMeters() * scale,
+                    offsetX + to.xMeters() * scale, offsetY - to.yMeters() * scale);
+            line.getStyleClass().add("route-line");
+            routeMapPane.getChildren().add(line);
+        }
+        for (RouteLocation location : route.subList(0, Math.max(1, route.size() - 1))) {
+            double x = offsetX + location.xMeters() * scale;
+            double y = offsetY - location.yMeters() * scale;
+            Circle marker = new Circle(x, y, location.id().equals("DEPOT") ? 7.0 : 5.0);
+            marker.getStyleClass().add(location.id().equals("DEPOT") ? "depot-marker" : "pickup-marker");
+            Label label = new Label(location.id());
+            label.setLayoutX(x + 8.0);
+            label.setLayoutY(y - 12.0);
+            routeMapPane.getChildren().addAll(marker, label);
+        }
     }
 
     private double parsePositive(String text) {

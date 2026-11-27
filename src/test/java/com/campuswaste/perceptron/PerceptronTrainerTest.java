@@ -204,17 +204,20 @@ class PerceptronTrainerTest {
         PerceptronDataset trainingDataset = loader.load(dataDirectory.resolve("waste_bin_perceptron_train.csv"));
         PerceptronDataset testDataset = loader.load(dataDirectory.resolve("waste_bin_perceptron_test.csv"));
 
-        PerceptronTrainingResult training = new PerceptronTrainer().train(trainingDataset);
+        PerceptronTrainingResult training = new PerceptronTrainer(
+                PerceptronTrainer.DEFAULT_LEARNING_RATE,
+                PerceptronTrainer.DEFAULT_MAX_EPOCHS,
+                PerceptronTrainer.PRODUCTION_POSITIVE_CLASS_WEIGHT).train(trainingDataset);
         PerceptronEvaluationResult evaluation = new PerceptronEvaluator()
                 .evaluate(training.model(), trainingDataset, testDataset);
 
         assertAll(
                 () -> assertEquals(2113, evaluation.totalSamples()),
-                () -> assertEquals(10, evaluation.truePositives()),
-                () -> assertEquals(1911, evaluation.trueNegatives()),
-                () -> assertEquals(4, evaluation.falsePositives()),
-                () -> assertEquals(188, evaluation.falseNegatives()),
-                () -> assertEquals(1921.0 / 2113.0, evaluation.accuracy(), 1.0e-12),
+                () -> assertEquals(198, evaluation.truePositives()),
+                () -> assertEquals(36, evaluation.trueNegatives()),
+                () -> assertEquals(1879, evaluation.falsePositives()),
+                () -> assertEquals(0, evaluation.falseNegatives()),
+                () -> assertEquals(234.0 / 2113.0, evaluation.accuracy(), 1.0e-12),
                 () -> assertTrue(training.epochsCompleted() <= PerceptronTrainer.DEFAULT_MAX_EPOCHS));
     }
 }

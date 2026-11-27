@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
@@ -454,6 +455,7 @@
                                         <VBox styleClass="panel" spacing="12">
                                             <Label text="Best route" styleClass="panel-title"/>
                                             <Label text="The route starts and ends at DEPOT and includes pickup bins only." styleClass="section-description" wrapText="true"/>
+                                            <Pane fx:id="routeMapPane" prefHeight="320" styleClass="route-map"/>
                                             <LineChart fx:id="distanceChart" animated="false" createSymbols="false" legendVisible="true" prefHeight="320">
                                                 <xAxis><NumberAxis label="Iteration"/></xAxis>
                                                 <yAxis><NumberAxis label="Distance (m)"/></yAxis>
