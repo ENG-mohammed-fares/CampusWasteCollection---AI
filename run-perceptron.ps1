@@ -4,7 +4,11 @@ $projectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $projectRoot
 
 $javaCommand = Get-Command java.exe -ErrorAction SilentlyContinue
-if ($null -eq $javaCommand) {
+if ($null -ne $javaCommand) {
+    $javaExecutable = $javaCommand.Source
+} elseif ($env:JAVA_HOME -and (Test-Path (Join-Path $env:JAVA_HOME "bin\java.exe"))) {
+    $javaExecutable = Join-Path $env:JAVA_HOME "bin\java.exe"
+} else {
     throw "Java 21 was not found. Set JAVA_HOME or add java.exe to PATH."
 }
 
@@ -112,7 +116,7 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "========== TRAINING AND TEST EVALUATION ==========" -ForegroundColor Cyan
 $trainingPath = $trainingFiles[0].FullName
 $testPath = $testFiles[0].FullName
-& $javaCommand.Source -cp $runtimeClasspath PerceptronCli "$trainingPath" "$testPath"
+& $javaExecutable -cp $runtimeClasspath PerceptronCli "$trainingPath" "$testPath"
 if ($LASTEXITCODE -ne 0) {
     throw "Perceptron training or evaluation failed."
 }
