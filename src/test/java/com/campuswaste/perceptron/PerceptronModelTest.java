@@ -102,7 +102,7 @@ class PerceptronModelTest {
 
     @Test
     void predictsPlusOneWhenActivationIsExactlyZero() {
-        assertEquals(1, sampleModel().predict(new double[] {1.0, 0.0, 1.0}));
+        assertEquals(1, sampleModel().predict(new double[] {-3.0, 0.0, 1.0}));
         assertEquals(1, new PerceptronModel(new double[3], 0.0).predict(new double[] {5.0, -5.0, 5.0}));
     }
 

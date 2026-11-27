@@ -3,6 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.LineChart?>
+<?import javafx.scene.control.NumberAxis?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
@@ -36,7 +38,7 @@
                 <Label text="WORKSPACE" styleClass="section-caption"/>
                 <Label text="Overview" styleClass="nav-active"/>
                 <Label text="Perceptron" styleClass="nav-item"/>
-                <Label text="Route Planning" styleClass="nav-item-disabled"/>
+                <Label text="Route Planning" styleClass="nav-item"/>
                 <Label text="Reports" styleClass="nav-item-disabled"/>
             </VBox>
 
@@ -140,7 +142,7 @@
                                         <Separator/>
                                         <Label text="02  SIMULATED ANNEALING"
                                                styleClass="algorithm-title"/>
-                                        <Label text="Route planning will be connected in a later UI stage."
+                                        <Label text="Use the Route Planning tab to create bins and calculate a collection route."
                                                wrapText="true"
                                                styleClass="algorithm-description"/>
                                         <Label text="NOT CONNECTED"
@@ -392,6 +394,9 @@
                                                        text="No prediction yet"
                                                        styleClass="prediction-result"/>
                                             </HBox>
+                                            <Label fx:id="currentFillStatusValue"
+                                                   text="Current fill: --"
+                                                   styleClass="result-label"/>
                                             <Label fx:id="predictionMessageLabel"
                                                    text=""
                                                    visible="false"
@@ -401,6 +406,58 @@
                                             <Label text="The feature meanings, units and fill thresholds are not defined by the supplied dataset specification. The prediction is a Perceptron collection recommendation (Pickup or No pickup), not a measured fill percentage."
                                                    wrapText="true"
                                                    styleClass="disclaimer"/>
+                                        </VBox>
+                                    </VBox>
+                                </content>
+                            </ScrollPane>
+                        </content>
+                    </Tab>
+
+                    <Tab text="Route Planning">
+                        <content>
+                            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll">
+                                <content>
+                                    <VBox spacing="18" styleClass="tab-content">
+                                        <Label text="Route Planning" styleClass="panel-title"/>
+                                        <VBox styleClass="panel" spacing="12">
+                                            <Label text="Create bins" styleClass="panel-title"/>
+                                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                                <Label text="Bin count" styleClass="field-caption"/>
+                                                <TextField fx:id="binCountField" text="10" prefWidth="90"/>
+                                                <Button text="Create Bins" onAction="#createBins" styleClass="secondary-button"/>
+                                            </HBox>
+                                            <Label text="Edit each bin ID and its three readings below." styleClass="section-description"/>
+                                            <GridPane hgap="8" vgap="4">
+                                                <Label text="Bin" styleClass="field-caption" GridPane.columnIndex="0"/>
+                                                <Label text="ID" styleClass="field-caption" GridPane.columnIndex="1"/>
+                                                <Label text="Reading 1" styleClass="field-caption" GridPane.columnIndex="2"/>
+                                                <Label text="Reading 2" styleClass="field-caption" GridPane.columnIndex="3"/>
+                                                <Label text="Reading 3" styleClass="field-caption" GridPane.columnIndex="4"/>
+                                            </GridPane>
+                                            <VBox fx:id="binsEditorBox" spacing="6"/>
+                                        </VBox>
+                                        <VBox styleClass="panel" spacing="12">
+                                            <Label text="Simulated Annealing settings" styleClass="panel-title"/>
+                                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                                <Label text="Initial temperature" styleClass="field-caption"/>
+                                                <TextField fx:id="initialTemperatureField" text="60" prefWidth="90"/>
+                                                <Label text="Cooling rate" styleClass="field-caption"/>
+                                                <TextField fx:id="coolingRateField" text="0.997" prefWidth="90"/>
+                                                <Button text="Plan Route" onAction="#planRoute" styleClass="primary-button"/>
+                                            </HBox>
+                                            <Label fx:id="routeSummaryLabel" text="Create bins, train the model, then plan a route." wrapText="true" styleClass="status-message"/>
+                                        </VBox>
+                                        <VBox styleClass="panel" spacing="12">
+                                            <Label text="Bin predictions" styleClass="panel-title"/>
+                                            <VBox fx:id="routePredictionsBox" spacing="5"/>
+                                        </VBox>
+                                        <VBox styleClass="panel" spacing="12">
+                                            <Label text="Best route" styleClass="panel-title"/>
+                                            <Label text="The route starts and ends at DEPOT and includes pickup bins only." styleClass="section-description" wrapText="true"/>
+                                            <LineChart fx:id="distanceChart" animated="false" createSymbols="false" legendVisible="true" prefHeight="320">
+                                                <xAxis><NumberAxis label="Iteration"/></xAxis>
+                                                <yAxis><NumberAxis label="Distance (m)"/></yAxis>
+                                            </LineChart>
                                         </VBox>
                                     </VBox>
                                 </content>

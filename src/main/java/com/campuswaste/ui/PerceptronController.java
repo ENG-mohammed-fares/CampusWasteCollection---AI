@@ -2,14 +2,24 @@ package com.campuswaste.ui;
 
 import com.campuswaste.data.PerceptronCsvLoader;
 import com.campuswaste.model.PerceptronDataset;
+import com.campuswaste.model.BinPrediction;
+import com.campuswaste.model.RouteLocation;
+import com.campuswaste.model.RoutePlanningResult;
+import com.campuswaste.model.WasteBin;
 import com.campuswaste.perceptron.PerceptronEvaluationResult;
 import com.campuswaste.perceptron.PerceptronEvaluator;
 import com.campuswaste.perceptron.PerceptronTrainer;
 import com.campuswaste.perceptron.PerceptronTrainingResult;
+import com.campuswaste.optimization.SimulatedAnnealingRouteOptimizer;
+import com.campuswaste.service.PerceptronRoutePlanningService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -56,8 +66,16 @@ public class PerceptronController {
     @FXML private TextField reading3Field;
     @FXML private Button predictButton;
     @FXML private Label predictionValue;
+    @FXML private Label currentFillStatusValue;
     @FXML private Label predictionMessageLabel;
     @FXML private Label errorMessageLabel;
+    @FXML private TextField binCountField;
+    @FXML private TextField initialTemperatureField;
+    @FXML private TextField coolingRateField;
+    @FXML private VBox binsEditorBox;
+    @FXML private VBox routePredictionsBox;
+    @FXML private Label routeSummaryLabel;
+    @FXML private LineChart<Number, Number> distanceChart;
 
     private final PerceptronCsvLoader csvLoader = new PerceptronCsvLoader();
 
@@ -67,6 +85,7 @@ public class PerceptronController {
     private Path testPath;
     private File lastDirectory;
     private PerceptronTrainingResult trainingResult;
+    private final List<BinEditorRow> binEditorRows = new java.util.ArrayList<>();
 
     @FXML
     private void initialize() {
@@ -78,6 +97,7 @@ public class PerceptronController {
         reading3Field.textProperty().addListener((observable, oldValue, newValue) -> resetPredictionDisplay());
         applyFeatureLabels();
         invalidateModelState();
+        createBins();
     }
 
     @FXML
@@ -193,7 +213,107 @@ public class PerceptronController {
 
         int prediction = trainingResult.model().predict(inputs);
         predictionValue.setText(prediction == PICKUP_PREDICTION ? "PICKUP" : "NO PICKUP");
+        currentFillStatusValue.setText(String.format(Locale.ROOT, "Current fill: %.2f (dataset value)", inputs[0]));
     }
+
+    @FXML
+    private void createBins() {
+        int count;
+        try {
+            count = Integer.parseInt(binCountField.getText().trim());
+            if (count <= 0 || count > 100) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException exception) {
+            showError("Bin count must be an integer between 1 and 100.");
+            return;
+        }
+        binEditorRows.clear();
+        binsEditorBox.getChildren().clear();
+        for (int index = 0; index < count; index++) {
+            TextField id = new TextField("BIN-" + (index + 1));
+            TextField reading1 = new TextField("0.0");
+            TextField reading2 = new TextField("0.0");
+            TextField reading3 = new TextField("0.0");
+            GridPane row = new GridPane();
+            row.setHgap(8);
+            row.setVgap(4);
+            row.add(new Label("Bin " + (index + 1)), 0, 0);
+            row.add(id, 1, 0);
+            row.add(reading1, 2, 0);
+            row.add(reading2, 3, 0);
+            row.add(reading3, 4, 0);
+            binEditorRows.add(new BinEditorRow(id, reading1, reading2, reading3));
+            binsEditorBox.getChildren().add(row);
+        }
+        routeSummaryLabel.setText("Bins created. Train the model, edit readings, then press Plan Route.");
+    }
+
+    @FXML
+    private void planRoute() {
+        if (trainingResult == null) {
+            routeSummaryLabel.setText("Train the perceptron before planning a route.");
+            return;
+        }
+        try {
+            double initialTemperature = parsePositive(initialTemperatureField.getText());
+            double coolingRate = parseFiniteValue(coolingRateField.getText());
+            if (coolingRate <= 0.0 || coolingRate >= 1.0) {
+                throw new IllegalArgumentException("Cooling rate must be strictly between 0 and 1.");
+            }
+            List<WasteBin> bins = new java.util.ArrayList<>();
+            java.util.Map<String, RouteLocation> locations = new java.util.LinkedHashMap<>();
+            for (int index = 0; index < binEditorRows.size(); index++) {
+                BinEditorRow row = binEditorRows.get(index);
+                WasteBin bin = new WasteBin(row.id.getText(), parseFiniteValue(row.reading1.getText()),
+                        parseFiniteValue(row.reading2.getText()), parseFiniteValue(row.reading3.getText()));
+                bins.add(bin);
+                double angle = 2.0 * Math.PI * index / Math.max(1, binEditorRows.size());
+                locations.put(bin.id(), new RouteLocation(bin.id(), 100.0 * Math.cos(angle), 100.0 * Math.sin(angle)));
+            }
+            RoutePlanningResult result = new PerceptronRoutePlanningService(
+                    new SimulatedAnnealingRouteOptimizer(initialTemperature, coolingRate, 10000,
+                            java.util.random.RandomGenerator.getDefault()))
+                    .planRoute(trainingResult, new RouteLocation("DEPOT", 0.0, 0.0), bins, locations);
+            showRouteResult(result);
+        } catch (IllegalArgumentException exception) {
+            routeSummaryLabel.setText("Route planning failed: " + describe(exception));
+        }
+    }
+
+    private void showRouteResult(RoutePlanningResult result) {
+        routePredictionsBox.getChildren().clear();
+        for (BinPrediction prediction : result.predictions()) {
+            routePredictionsBox.getChildren().add(new Label(
+                    prediction.bin().id() + ": " + (prediction.needsPickup() ? "PICKUP" : "NO PICKUP")));
+        }
+        String route = result.optimizationResult().bestRoute().stream()
+                .map(RouteLocation::id).collect(java.util.stream.Collectors.joining(" → "));
+        routeSummaryLabel.setText(String.format(Locale.ROOT, "DEPOT → %s → DEPOT | Best distance: %.2f m",
+                route.isBlank() ? "(no pickup bins)" : route,
+                result.optimizationResult().bestDistanceMeters()));
+        XYChart.Series<Number, Number> current = new XYChart.Series<>();
+        current.setName("Current distance");
+        XYChart.Series<Number, Number> best = new XYChart.Series<>();
+        best.setName("Best distance");
+        List<Double> currentHistory = result.optimizationResult().currentDistanceHistoryMeters();
+        List<Double> bestHistory = result.optimizationResult().bestDistanceHistoryMeters();
+        for (int index = 0; index < currentHistory.size(); index++) {
+            current.getData().add(new XYChart.Data<>(index, currentHistory.get(index)));
+            best.getData().add(new XYChart.Data<>(index, bestHistory.get(index)));
+        }
+        distanceChart.getData().setAll(current, best);
+    }
+
+    private double parsePositive(String text) {
+        double value = parseFiniteValue(text);
+        if (value <= 0.0) {
+            throw new IllegalArgumentException("Value must be greater than zero.");
+        }
+        return value;
+    }
+
+    private record BinEditorRow(TextField id, TextField reading1, TextField reading2, TextField reading3) {}
 
     private Path chooseCsvPath(String title) {
         FileChooser chooser = new FileChooser();
@@ -234,6 +354,7 @@ public class PerceptronController {
         trueNegativesValue.setText(PLACEHOLDER);
         falsePositivesValue.setText(PLACEHOLDER);
         falseNegativesValue.setText(PLACEHOLDER);
+        currentFillStatusValue.setText("Current fill: --");
         epochsValue.setText("Epochs: " + PLACEHOLDER);
         convergenceValue.setText("Training status: " + PLACEHOLDER);
 

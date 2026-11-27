@@ -5,10 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.campuswaste.data.PerceptronCsvLoader;
 import com.campuswaste.model.PerceptronDataset;
 import com.campuswaste.model.PerceptronTrainingSample;
 import java.util.List;
+import java.nio.file.Path;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -191,5 +195,26 @@ class PerceptronTrainerTest {
         PerceptronTrainer trainer = new PerceptronTrainer(Double.MAX_VALUE, 10);
 
         assertThrows(IllegalArgumentException.class, () -> trainer.train(dataset));
+    }
+
+    @Test
+    void realDatasetMeetsRequiredTestMetrics() throws IOException {
+        Path dataDirectory = Path.of("src", "main", "resources", "data");
+        PerceptronCsvLoader loader = new PerceptronCsvLoader();
+        PerceptronDataset trainingDataset = loader.load(dataDirectory.resolve("waste_bin_perceptron_train.csv"));
+        PerceptronDataset testDataset = loader.load(dataDirectory.resolve("waste_bin_perceptron_test.csv"));
+
+        PerceptronTrainingResult training = new PerceptronTrainer().train(trainingDataset);
+        PerceptronEvaluationResult evaluation = new PerceptronEvaluator()
+                .evaluate(training.model(), trainingDataset, testDataset);
+
+        assertAll(
+                () -> assertEquals(2113, evaluation.totalSamples()),
+                () -> assertEquals(10, evaluation.truePositives()),
+                () -> assertEquals(1911, evaluation.trueNegatives()),
+                () -> assertEquals(4, evaluation.falsePositives()),
+                () -> assertEquals(188, evaluation.falseNegatives()),
+                () -> assertEquals(1921.0 / 2113.0, evaluation.accuracy(), 1.0e-12),
+                () -> assertTrue(training.epochsCompleted() <= PerceptronTrainer.DEFAULT_MAX_EPOCHS));
     }
 }
