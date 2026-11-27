@@ -1,0 +1,146 @@
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #F3F6FA;
+}
+
+.sidebar {
+    -fx-background-color: #142238;
+}
+
+.brand-title {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+}
+
+.brand-subtitle {
+    -fx-text-fill: #48C6A0;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.section-caption {
+    -fx-text-fill: #8292A9;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+.nav-item, .nav-active {
+    -fx-padding: 12px;
+    -fx-background-radius: 8px;
+    -fx-font-size: 13px;
+}
+
+.nav-item {
+    -fx-text-fill: #B6C2D3;
+}
+
+.nav-active {
+    -fx-background-color: #263C58;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}
+
+.footer-title {
+    -fx-text-fill: #DCE5F0;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.footer-note {
+    -fx-text-fill: #8292A9;
+    -fx-font-size: 10px;
+}
+
+.content {
+    -fx-background-color: #F3F6FA;
+}
+
+.page-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #17283E;
+}
+
+.page-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #8290A2;
+}
+
+.status-caption {
+    -fx-font-size: 9px;
+    -fx-text-fill: #8290A2;
+}
+
+.status-pill {
+    -fx-background-color: #DDF5E9;
+    -fx-text-fill: #21845C;
+    -fx-padding: 7px 12px;
+    -fx-background-radius: 20px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+.stat-card, .panel {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-border-color: #E7ECF2;
+    -fx-border-radius: 12px;
+}
+
+.stat-card {
+    -fx-padding: 19px;
+}
+
+.stat-label {
+    -fx-font-size: 10px;
+    -fx-text-fill: #8491A3;
+    -fx-font-weight: bold;
+}
+
+.stat-value {
+    -fx-font-size: 29px;
+    -fx-text-fill: #17283E;
+    -fx-font-weight: bold;
+}
+
+.stat-note {
+    -fx-font-size: 10px;
+    -fx-text-fill: #96A1B0;
+}
+
+.panel {
+    -fx-padding: 22px;
+}
+
+.panel-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #17283E;
+    -fx-font-weight: bold;
+}
+
+.empty-title {
+    -fx-font-size: 17px;
+    -fx-text-fill: #52647B;
+    -fx-font-weight: bold;
+}
+
+.empty-description, .algorithm-description {
+    -fx-font-size: 11px;
+    -fx-text-fill: #8996A7;
+}
+
+.algorithm-title {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #243B56;
+}
+
+.pending-tag {
+    -fx-background-color: #F1F4F8;
+    -fx-text-fill: #7A899C;
+    -fx-padding: 6px 9px;
+    -fx-background-radius: 5px;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
