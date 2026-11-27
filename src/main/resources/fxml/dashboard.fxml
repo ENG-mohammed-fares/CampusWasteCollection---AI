@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
@@ -32,7 +33,7 @@
 
             <VBox spacing="4">
                 <Label text="CAMPUS" styleClass="brand-title"/>
-                <Label text="WASTE AI" styleClass="brand-subtitle"/>
+                <Label text="WASTE COLLECTION" styleClass="brand-subtitle"/>
             </VBox>
 
             <VBox spacing="12">
@@ -40,14 +41,13 @@
                 <Label text="Overview" styleClass="nav-active"/>
                 <Label text="Perceptron" styleClass="nav-item"/>
                 <Label text="Route Planning" styleClass="nav-item"/>
-                <Label text="Reports" styleClass="nav-item-disabled"/>
             </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
 
             <VBox spacing="5">
                 <Label text="CAMPUS COLLECTION" styleClass="footer-title"/>
-                <Label text="AI-powered waste management"
+                <Label text="Campus collection management"
                        styleClass="footer-note"/>
             </VBox>
         </VBox>
@@ -62,7 +62,7 @@
             <HBox alignment="CENTER_LEFT" spacing="12">
                 <VBox spacing="5">
                     <Label text="Campus Waste Collection" styleClass="page-title"/>
-                    <Label text="Perceptron training, evaluation and bin prediction."
+                    <Label text="Training, evaluation and bin prediction."
                            styleClass="page-subtitle"/>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
@@ -83,31 +83,24 @@
                         <content>
                             <VBox spacing="18" styleClass="tab-content">
                                 <HBox spacing="14">
-                                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                                        <Label text="TOTAL BINS" styleClass="stat-label"/>
-                                        <Label text="--" styleClass="stat-value"/>
-                                        <Label text="No campus bin records loaded"
+                                    <VBox styleClass="stat-card model-stat" HBox.hgrow="ALWAYS">
+                                        <Label text="Model status" styleClass="stat-label"/>
+                                        <Label text="Not trained" styleClass="stat-value"/>
+                                        <Label text="Select datasets to begin"
                                                styleClass="stat-note"/>
                                     </VBox>
 
                                     <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                                        <Label text="NEED PICKUP" styleClass="stat-label"/>
-                                        <Label text="--" styleClass="stat-value"/>
-                                        <Label text="Awaiting live bin predictions"
+                                        <Label text="Route planning" styleClass="stat-label"/>
+                                        <Label text="Connected" styleClass="stat-value"/>
+                                        <Label text="Ready for bin inputs"
                                                styleClass="stat-note"/>
                                     </VBox>
 
                                     <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                                        <Label text="ACTIVE ROUTES" styleClass="stat-label"/>
-                                        <Label text="--" styleClass="stat-value"/>
-                                        <Label text="Route planning connected"
-                                               styleClass="stat-note"/>
-                                    </VBox>
-
-                                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                                        <Label text="TOTAL DISTANCE" styleClass="stat-label"/>
-                                        <Label text="--" styleClass="stat-value"/>
-                                        <Label text="Awaiting route calculation"
+                                        <Label text="Data state" styleClass="stat-label"/>
+                                        <Label text="Awaiting files" styleClass="stat-value"/>
+                                        <Label text="Training and test CSVs"
                                                styleClass="stat-note"/>
                                     </VBox>
                                 </HBox>
@@ -130,9 +123,9 @@
 
                                     <VBox styleClass="panel" prefWidth="300"
                                           spacing="16">
-                                        <Label text="AI ENGINE" styleClass="panel-title"/>
+                                        <Label text="Processing methods" styleClass="panel-title"/>
                                         <Separator/>
-                                        <Label text="01  PERCEPTRON"
+                                        <Label text="01  Perceptron"
                                                styleClass="algorithm-title"/>
                                         <Label text="Train the model, evaluate it on the separate test dataset, and predict individual bin readings."
                                                wrapText="true"
@@ -141,7 +134,7 @@
                                                text="NOT TRAINED"
                                                styleClass="pending-tag"/>
                                         <Separator/>
-                                        <Label text="02  SIMULATED ANNEALING"
+                                        <Label text="02  Simulated Annealing"
                                                styleClass="algorithm-title"/>
                                         <Label text="Use the Route Planning tab to create bins and calculate a collection route."
                                                wrapText="true"
@@ -419,8 +412,10 @@
                             <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll">
                                 <content>
                                     <VBox spacing="18" styleClass="tab-content">
-                                        <Label text="Route Planning" styleClass="panel-title"/>
-                                        <VBox styleClass="panel" spacing="12">
+                                        <Label text="Route planning" styleClass="panel-title"/>
+                                        <FlowPane hgap="18" vgap="18" prefWrapLength="1050" alignment="TOP_LEFT">
+                                            <VBox spacing="18" prefWidth="470">
+                                            <VBox styleClass="panel" spacing="12">
                                             <Label text="Create bins" styleClass="panel-title"/>
                                             <HBox spacing="10" alignment="CENTER_LEFT">
                                                 <Label text="Bin count" styleClass="field-caption"/>
@@ -448,6 +443,8 @@
                                             </HBox>
                                             <Label fx:id="routeSummaryLabel" text="Create bins, train the model, then plan a route." wrapText="true" styleClass="status-message"/>
                                         </VBox>
+                                            </VBox>
+                                            <VBox spacing="18" prefWidth="650">
                                         <VBox styleClass="panel" spacing="12">
                                             <Label text="Bin predictions" styleClass="panel-title"/>
                                             <VBox fx:id="routePredictionsBox" spacing="5"/>
@@ -466,6 +463,8 @@
                                                 <yAxis><NumberAxis label="Distance (m)"/></yAxis>
                                             </LineChart>
                                         </VBox>
+                                            </VBox>
+                                        </FlowPane>
                                     </VBox>
                                 </content>
                             </ScrollPane>
