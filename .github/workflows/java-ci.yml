@@ -1,0 +1,46 @@
+name: Java CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "pom.xml"
+      - "src/**"
+      - ".mvn/**"
+      - "mvnw"
+      - "mvnw.cmd"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "pom.xml"
+      - "src/**"
+      - ".mvn/**"
+      - "mvnw"
+      - "mvnw.cmd"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: java-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build and test (Java 21)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build and run tests
+        run: mvn -B clean verify
