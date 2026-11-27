@@ -100,7 +100,7 @@
                                     <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
                                         <Label text="ACTIVE ROUTES" styleClass="stat-label"/>
                                         <Label text="--" styleClass="stat-value"/>
-                                        <Label text="Route planning not connected yet"
+                                        <Label text="Route planning connected"
                                                styleClass="stat-note"/>
                                     </VBox>
 
@@ -146,7 +146,7 @@
                                         <Label text="Use the Route Planning tab to create bins and calculate a collection route."
                                                wrapText="true"
                                                styleClass="algorithm-description"/>
-                                        <Label text="NOT CONNECTED"
+                                        <Label text="CONNECTED"
                                                styleClass="pending-tag"/>
                                     </VBox>
                                 </HBox>

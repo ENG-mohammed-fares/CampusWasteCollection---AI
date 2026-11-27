@@ -3,15 +3,18 @@ $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $projectRoot
 
-$javaHome = "C:\Program Files\Eclipse Adoptium\jdk-21.0.13.10002-hotspot"
-if (Test-Path (Join-Path $javaHome "bin\java.exe")) {
-    $env:JAVA_HOME = $javaHome
-    $env:Path = "$env:JAVA_HOME\bin;$env:Path"
+$javaCommand = Get-Command java.exe -ErrorAction SilentlyContinue
+if ($null -eq $javaCommand) {
+    throw "Java 21 was not found. Set JAVA_HOME or add java.exe to PATH."
 }
 
-$mvnCmd = "D:\Intellij\IntelliJ IDEA 2026.2.1\plugins\maven-plugin\lib\maven3\bin\mvn.cmd"
-if (-not (Test-Path $mvnCmd)) {
-    throw "Maven executable was not found at: $mvnCmd"
+$mvnCommand = Get-Command mvn.cmd -ErrorAction SilentlyContinue
+if ($null -ne $mvnCommand) {
+    $mvnCmd = $mvnCommand.Source
+} elseif (Test-Path (Join-Path $projectRoot "mvnw.cmd")) {
+    $mvnCmd = Join-Path $projectRoot "mvnw.cmd"
+} else {
+    throw "Maven was not found. Install Maven or keep mvnw.cmd in the project root."
 }
 
 $dataDir = Join-Path $projectRoot "src\main\resources\data"
@@ -109,7 +112,7 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "========== TRAINING AND TEST EVALUATION ==========" -ForegroundColor Cyan
 $trainingPath = $trainingFiles[0].FullName
 $testPath = $testFiles[0].FullName
-& java -cp $runtimeClasspath PerceptronCli "$trainingPath" "$testPath"
+& $javaCommand.Source -cp $runtimeClasspath PerceptronCli "$trainingPath" "$testPath"
 if ($LASTEXITCODE -ne 0) {
     throw "Perceptron training or evaluation failed."
 }
